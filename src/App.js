@@ -9,6 +9,7 @@ function App() {
   const [color, setColor] = useState("");
   const [border, setBorder] = useState();
   const [speed, setSpeed] = useState(0);
+  const [pretty, setPretty] = useState(false);
   // const observer = new IntersectionObserver(callback);
 
   const displayBoxes = () => {
@@ -229,9 +230,16 @@ function App() {
   const handleColor = (index) => {
     // count.current = index;
     if (border === index) {
-      return "solid black";
+      if (pretty) {
+        return "rgba(46, 169, 240, 0.3) 0px 0px 0px 6px,rgba(46, 169, 240, 0.2) 0px 0px 0px 9px,rgba(46, 169, 240, 0.1) 0px 0px 0px 12px";
+        // return "rgb(85, 91, 255) 0px 0px 0px 3px, rgb(31, 193, 27) 0px 0px 0px 6px,rgb(255, 217, 19) 0px 0px 0px 9px, rgb(255, 156, 85) 0px 0px 0px 12px,rgb(255, 85, 85) 0px 0px 0px 15px";
+      } else {
+        return "rgba(3, 102, 214, 0.3) 0px 0px 0px 3px";
+      }
     }
   };
+
+  console.log(pretty);
 
   function handleChange(event) {
     // const customSpeed = event.target.value;
@@ -243,13 +251,14 @@ function App() {
 
   return (
     <div className="App">
-      <div className="app">
+      <div className={pretty ? "app app-prettier" : "app"}>
         {boxes &&
           boxes.map((box, index) => {
             const { height, width, x, y } = box;
             return (
               <div
-                className="box"
+                className={pretty ? "box prettier-box" : "box"}
+                // className="box"
                 ref={(el) => (ref.current[index] = el)}
                 onClick={() => moveAround(index)}
                 // ref={ref}
@@ -260,7 +269,7 @@ function App() {
                   top: y,
                   left: x,
                   backgroundColor: color,
-                  border: handleColor(index),
+                  boxShadow: handleColor(index),
                 }}
               ></div>
             );
@@ -281,7 +290,14 @@ function App() {
           </div>
           <div className="inputs">
             <label>Pretty</label>
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={pretty}
+              onChange={(event) => {
+                // console.log(event.target.value);
+                setPretty(event.target.checked);
+              }}
+            />
           </div>
           <div className="inputs">
             <label>Speed:</label>
@@ -295,8 +311,15 @@ function App() {
               }}
             />
           </div>
-          <button onClick={displayBoxes}>Add</button>
-          <button onClick={clearBox}>Clear</button>
+          <button
+            className={pretty && "button-prettier"}
+            onClick={displayBoxes}
+          >
+            Add
+          </button>
+          <button className={pretty && "button-prettier"} onClick={clearBox}>
+            Clear
+          </button>
         </div>
       </div>
     </div>
